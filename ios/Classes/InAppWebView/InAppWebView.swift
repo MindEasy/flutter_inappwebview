@@ -1456,6 +1456,16 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
         }
     }
     
+    @available(iOS 15.0, *)
+    public func webView(
+        _ webView: WKWebView,
+        decideMediaCapturePermissionsFor origin: WKSecurityOrigin,
+        initiatedBy frame: WKFrameInfo,
+        type: WKMediaCaptureType
+    ) async -> WKPermissionDecision {
+        return .grant
+    }
+    
     public func injectJavascriptFileFromUrl(urlFile: String, scriptHtmlTagAttributes: [String:Any?]?) {
         var scriptAttributes = ""
         if let scriptHtmlTagAttributes = scriptHtmlTagAttributes {
