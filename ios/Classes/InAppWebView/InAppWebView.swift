@@ -1526,16 +1526,6 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
         }
     }
     
-    @available(iOS 15.0, *)
-    public func webView(
-        _ webView: WKWebView,
-        decideMediaCapturePermissionsFor origin: WKSecurityOrigin,
-        initiatedBy frame: WKFrameInfo,
-        type: WKMediaCaptureType
-    ) async -> WKPermissionDecision {
-        return .grant
-    }
-    
     public func injectJavascriptFileFromUrl(urlFile: String, scriptHtmlTagAttributes: [String:Any?]?) {
         var scriptAttributes = ""
         if let scriptHtmlTagAttributes = scriptHtmlTagAttributes {
@@ -1650,50 +1640,60 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
         return result;
     }
 
+    // @available(iOS 15.0, *)
+    // public func webView(_ webView: WKWebView,
+    //                     requestMediaCapturePermissionFor origin: WKSecurityOrigin,
+    //                     initiatedByFrame frame: WKFrameInfo,
+    //                     type: WKMediaCaptureType,
+    //                     decisionHandler: @escaping (WKPermissionDecision) -> Void) {
+    //     let origin = "\(origin.protocol)://\(origin.host)\(origin.port != 0 ? ":" + String(origin.port) : "")"
+    //     let permissionRequest = PermissionRequest(origin: origin, resources: [type.rawValue], frame: frame)
+        
+    //     var decisionHandlerCalled = false
+    //     let callback = WebViewChannelDelegate.PermissionRequestCallback()
+    //     callback.nonNullSuccess = { (response: PermissionResponse) in
+    //         if let action = response.action {
+    //             decisionHandlerCalled = true
+    //             switch action {
+    //                 case 1:
+    //                     decisionHandler(.grant)
+    //                     break
+    //                 case 2:
+    //                     decisionHandler(.prompt)
+    //                     break
+    //                 default:
+    //                     decisionHandler(.deny)
+    //             }
+    //             return false
+    //         }
+    //         return true
+    //     }
+    //     callback.defaultBehaviour = { (response: PermissionResponse?) in
+    //         if !decisionHandlerCalled {
+    //             decisionHandlerCalled = true
+    //             decisionHandler(.deny)
+    //         }
+    //     }
+    //     callback.error = { [weak callback] (code: String, message: String?, details: Any?) in
+    //         print(code + ", " + (message ?? ""))
+    //         callback?.defaultBehaviour(nil)
+    //     }
+        
+    //     if let channelDelegate = channelDelegate {
+    //         channelDelegate.onPermissionRequest(request: permissionRequest, callback: callback)
+    //     } else {
+    //         callback.defaultBehaviour(nil)
+    //     }
+    // }
+
     @available(iOS 15.0, *)
-    public func webView(_ webView: WKWebView,
-                        requestMediaCapturePermissionFor origin: WKSecurityOrigin,
-                        initiatedByFrame frame: WKFrameInfo,
-                        type: WKMediaCaptureType,
-                        decisionHandler: @escaping (WKPermissionDecision) -> Void) {
-        let origin = "\(origin.protocol)://\(origin.host)\(origin.port != 0 ? ":" + String(origin.port) : "")"
-        let permissionRequest = PermissionRequest(origin: origin, resources: [type.rawValue], frame: frame)
-        
-        var decisionHandlerCalled = false
-        let callback = WebViewChannelDelegate.PermissionRequestCallback()
-        callback.nonNullSuccess = { (response: PermissionResponse) in
-            if let action = response.action {
-                decisionHandlerCalled = true
-                switch action {
-                    case 1:
-                        decisionHandler(.grant)
-                        break
-                    case 2:
-                        decisionHandler(.prompt)
-                        break
-                    default:
-                        decisionHandler(.deny)
-                }
-                return false
-            }
-            return true
-        }
-        callback.defaultBehaviour = { (response: PermissionResponse?) in
-            if !decisionHandlerCalled {
-                decisionHandlerCalled = true
-                decisionHandler(.deny)
-            }
-        }
-        callback.error = { [weak callback] (code: String, message: String?, details: Any?) in
-            print(code + ", " + (message ?? ""))
-            callback?.defaultBehaviour(nil)
-        }
-        
-        if let channelDelegate = channelDelegate {
-            channelDelegate.onPermissionRequest(request: permissionRequest, callback: callback)
-        } else {
-            callback.defaultBehaviour(nil)
-        }
+    public func webView(
+        _ webView: WKWebView,
+        decideMediaCapturePermissionsFor origin: WKSecurityOrigin,
+        initiatedBy frame: WKFrameInfo,
+        type: WKMediaCaptureType
+    ) async -> WKPermissionDecision {
+        return .grant
     }
     
     @available(iOS 15.0, *)
