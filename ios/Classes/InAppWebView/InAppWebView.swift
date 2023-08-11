@@ -8,6 +8,7 @@
 import Flutter
 import Foundation
 import WebKit
+import AVFoundation
 
 public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
                             WKNavigationDelegate, WKScriptMessageHandler, UIGestureRecognizerDelegate,
@@ -90,6 +91,7 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
         panGestureRecognizer = UIPanGestureRecognizer()
         panGestureRecognizer.delegate = self
         panGestureRecognizer.addTarget(self, action: #selector(endDraggingDetected))
+        self.forceUsingSpeakerAudio()
     }
     
     override public var frame: CGRect {
@@ -118,6 +120,17 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
 
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
+    }
+
+    private func forceUsingSpeakerAudio(){
+         let session: AVAudioSession = AVAudioSession.sharedInstance()
+        do {
+            try session.setCategory(AVAudioSessionCategoryPlayAndRecord)
+            try session.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+            try session.setActive(true)
+        } catch {
+            print("Couldn't override output audio port")
+        }
     }
     
     // BVC KVO events for all changes on the webview will call this.
